@@ -1,0 +1,37 @@
+This will be a little harder, and may even need you to do some programming! I'm going to write me a script to do it, so if you wait long enough, you'll get 
+the data anyway.
+
+1. login
+2. go to /account/info - this gives you your user_id. for me, it is 338374
+3. go to this url(replace the id with your id): /hapi/v1/users/338374/vitals?field_names=*&start_date=2013-06-01&end_date=2013-12-01
+4. the response is a hash that looks like this: 
+{"status_code": 0, 
+ "data": {"data":[ {}, {}... ],
+          "offset":0,
+          "limit":100,
+          "total":1913,
+          "query_id":"e591a290469001317050042b2b55579b"
+}
+
+You see how in this case, I have 1913 pieces of data in this six month span, and the query returns only 100. Now, you can call for the next 100, using this: 
+/hapi/v1/users/338374/vitals?query_id=e591a290469001317050042b2b55579b&offset=100&limit=100
+
+Notice that now, you just pass the query_id returned from before. 
+
+Keep doing this until you get all 1913 data points and then move on to the next date range!
+
+Oh.. also, this includes all that stupid fitbit raw data, so there will be a TON of noise here.
+
+So... you can work on it, but if you wait long enough, I will give you a tool that will let you get all the data with the noise filtered out.
+
+Ok. There are a few different ways to do this: 
+1. Fake an app. Lol. No one will notice. Doing this will let me log in via the web view. 
+2. Do this the round-about way, which is that you rely on knowing the session id and auth-token. So, log in via browser, then copy that over. 
+3. Fake a browser. This is easier than it sounds. All we do is the following: 
+  a. GET /account/login
+  b. extract the authenticity token from it. 
+  c. POST /account/login with the login/password. 
+  d. Now, its just about making the api calls and parsing the data. 
+
+alternative (3) will be my first attempt. Very quick to implement (hopefully). I can do this in ruby as the first prototype. 
+
