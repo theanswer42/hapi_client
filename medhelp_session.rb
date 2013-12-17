@@ -22,8 +22,9 @@ class MedhelpSession
     params = {"utf8" => "&#x2713;", 'authenticity_token' => token, 'user[login]' => name, 'user[password]' => password}
     response = self.post('/account/login', params)
     
-    info = self.json_get('/account/info')
+    info = self.get_json('/account/info')
     @user = info['data']['user']
+    return @user['id']
   end
   
   def url_for_path(path)
@@ -31,12 +32,13 @@ class MedhelpSession
   end
 
   def get(path, params={})
-    query_string = params.to_a.collect {|kv| "#{k}=#{CGI.escape(v)}" }.join("&")
-
+    query_string = params.to_a.collect {|kv| "#{kv[0]}=#{CGI.escape(kv[1].to_s)}" }.join("&")
+    url = self.url_for_path(path)
     if !query_string.empty?
-      url = "#{self.url_for_path(path)}?#{query_string}"
+      url = "#{url}?#{query_string}"
     end
     begin
+      puts "Calling #{url}"
       response = RestClient.get url, {:cookies => @cookies}
       @cookies.merge!(response.cookies)
     rescue RestClient::Exception => e
