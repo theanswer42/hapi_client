@@ -1,9 +1,10 @@
 gem 'rest-client'
 require 'rest_client'
+require 'json'
 
 BASE_URLS = {
-  :production => 'www.medhelp.org',
-  :cluster => 'partner1.medhelp.ws'
+  :production => 'www.medhelp.org'
+
 }
 
 class MedhelpSession

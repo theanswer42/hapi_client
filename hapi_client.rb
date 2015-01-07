@@ -38,6 +38,7 @@ class HapiClient
       query_id = body['query_id']
       
       body = session.get_json(vitals_base_path, {query_id: query_id, offset: offset, limit: limit})
+
     end
     
     data
